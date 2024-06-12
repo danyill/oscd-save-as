@@ -17,8 +17,7 @@
     "tsBuildInfoFile": "dist/.tsbuildinfo",
     "declaration": true,
     "incremental": true,
-    "skipLibCheck": true,
-    "types": [ "@types/wicg-file-system-access"]
+    "skipLibCheck": true
   },
   "include": ["**/*.ts"]
 }

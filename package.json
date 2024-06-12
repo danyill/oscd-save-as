@@ -27,7 +27,7 @@
     "format": "eslint --ext .ts,.html . --fix --ignore-path .gitignore && prettier \"**/*.ts\" --write --ignore-path .gitignore"
   },
   "dependencies": {
-    "@material/mwc-dialog": "^0.27.0",
+    "@material/mwc-snackbar": "^0.27.0",
     "@openscd/open-scd-core": "^0.0.2",
     "lit": "^2.4.0"
   },

@@ -30,7 +30,7 @@ export default class SaveAs extends LitElement {
   usedDirectory: string = '';
 
   @property({ attribute: false })
-  fileHandle: FileSystemFileHandle | null = null;
+  fileHandle: object | null = null;
 
   @property({ attribute: false })
   userMessage: string = '';
@@ -87,11 +87,11 @@ export default class SaveAs extends LitElement {
     if (!this.doc || !this.fileHandle) return;
 
     try {
-      const writableStream = await this.fileHandle.createWritable();
+      const writableStream = await (<any>this.fileHandle).createWritable();
       const xmlFile = new XMLSerializer().serializeToString(this.doc);
       await writableStream.write(xmlFile);
 
-      this.userMessage = `File ${this.fileHandle.name} saved (${fileSize(
+      this.userMessage = `File ${(<any>this.fileHandle).name} saved (${fileSize(
         xmlFile.length
       )}).`;
 
