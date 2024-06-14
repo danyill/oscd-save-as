@@ -40,6 +40,8 @@ export default class SaveAs extends LitElement {
   @query('#userMessage') userMessageUI?: Snackbar;
 
   async getSaveFileLocation(): Promise<void> {
+    if (!this.doc) return;
+
     // File System API feature exists
     if ('showSaveFilePicker' in window) {
       // eslint-disable-next-line no-undef
@@ -65,6 +67,24 @@ export default class SaveAs extends LitElement {
         'Sorry, your browser does not support the File System API required.';
       if (this.userMessageUI) this.userMessageUI!.show();
     }
+  }
+
+  constructor() {
+    super();
+    document.addEventListener('keydown', event => this.handleKeyPress(event));
+  }
+
+  private handleKeyPress(e: KeyboardEvent): void {
+    if (!e.ctrlKey || (e.key !== 's' && e.key !== 'S')) return;
+
+    if (e.shiftKey) {
+      this.getSaveFileLocation();
+    } else {
+      this.fileSave();
+    }
+
+    e.stopPropagation();
+    e.preventDefault();
   }
 
   async run(): Promise<void> {
