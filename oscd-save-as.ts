@@ -53,6 +53,10 @@ export default class SaveAs extends LitElement {
             description: 'SCD file',
             accept: { 'text/xml': ['.scd', '.SCD'] },
           },
+          {
+            description: 'SSD file',
+            accept: { 'text/xml': ['.ssd', '.SSD'] },
+          },
         ],
       };
 
