@@ -46,7 +46,6 @@ export default class SaveAs extends LitElement {
     if ('showSaveFilePicker' in window) {
       // eslint-disable-next-line no-undef
       const opts: any = {
-        startIn: 'downloads',
         suggestedName: this.docName,
         types: [
           {
@@ -121,7 +120,7 @@ export default class SaveAs extends LitElement {
 
       await writableStream.close();
     } catch (error) {
-      this.userMessage = `Unable to to write to file system. 
+      this.userMessage = `Unable to to write to file system.
       Check storage space and permissions.`;
 
       if (this.userMessageUI) this.userMessageUI!.show();
