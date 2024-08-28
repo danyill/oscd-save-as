@@ -884,6 +884,21 @@ function fileSize(kBSize) {
         return `${(kBSize / 1e3).toFixed(2)} kB`;
     return 'Unknown size';
 }
+function formatXml(xml, tab) {
+    let formatted = '';
+    let indent = '';
+    // eslint-disable-next-line no-param-reassign
+    if (!tab)
+        tab = '\t';
+    xml.split(/>\s*</).forEach(node => {
+        if (node.match(/^\/\w/))
+            indent = indent.substring(tab.length);
+        formatted += `${indent}<${node}>\r\n`;
+        if (node.match(/^<?\w[^>]*[^/]$/))
+            indent += tab;
+    });
+    return formatted.substring(1, formatted.length - 3);
+}
 /**
  * WebComponent for OpenSCD to allow saving to a file system location
  * using the File System API
@@ -971,8 +986,8 @@ class SaveAs extends s$1 {
             return;
         }
         try {
-            const writableStream = await fileHandle.createWritable();
-            const xmlFile = new XMLSerializer().serializeToString(this.doc);
+            const writableStream = await this.fileHandle.createWritable();
+            const xmlFile = formatXml(new XMLSerializer().serializeToString(this.doc));
             await writableStream.write(xmlFile);
             this.userMessage = `File ${fileHandle.name} saved (${fileSize(xmlFile.length)}).`;
             await writableStream.close();
