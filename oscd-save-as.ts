@@ -1,4 +1,4 @@
-import { html, LitElement, TemplateResult } from 'lit';
+import { html, LitElement, PropertyValues, TemplateResult } from 'lit';
 import { property, query } from 'lit/decorators.js';
 
 import { get, set } from 'idb-keyval';
@@ -162,6 +162,18 @@ export default class SaveAs extends LitElement {
     }
 
     if (this.userMessageUI) this.userMessageUI!.show();
+  }
+
+  protected async updated(changedProperties: PropertyValues): Promise<void> {
+    super.updated(changedProperties);
+
+    // If a new document has opened we don't  try to save any more
+    // until we have a new "Save As" dialogue.
+    // If the same filename is opened this doesn't seem to work quite
+    // right, see https://github.com/openscd/open-scd-core/issues/92
+    if (changedProperties.has('docName')) {
+      this.fileHandle = null;
+    }
   }
 
   render(): TemplateResult {
