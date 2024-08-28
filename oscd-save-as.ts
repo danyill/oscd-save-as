@@ -1,6 +1,8 @@
 import { html, LitElement, TemplateResult } from 'lit';
 import { property, query } from 'lit/decorators.js';
 
+import { get, set } from 'idb-keyval';
+
 import '@material/mwc-snackbar';
 
 import type { Snackbar } from '@material/mwc-snackbar';
@@ -45,10 +47,18 @@ export default class SaveAs extends LitElement {
   usedDirectory: string = '';
 
   @property({ attribute: false })
-  fileHandle: object | null = null;
-
-  @property({ attribute: false })
   userMessage: string = '';
+
+  // eslint-disable-next-line class-methods-use-this
+  @property()
+  set fileHandle(handle: object | null | undefined) {
+    set('oscd-save-as-file-handle', handle);
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  get fileHandle(): Promise<object | null | undefined> {
+    return get('oscd-save-as-file-handle');
+  }
 
   usedFileNames: string[] = [];
 
@@ -77,7 +87,7 @@ export default class SaveAs extends LitElement {
       const fileHandle = await (<any>window.showSaveFilePicker(opts));
 
       if (fileHandle && fileHandle.kind === 'file') {
-        this.fileHandle = fileHandle;
+        await (this.fileHandle = fileHandle);
         this.fileSave();
       }
     } else {
@@ -113,7 +123,7 @@ export default class SaveAs extends LitElement {
     // Currently using a fragment on the plugin source file name
     // probably not a very stable approach, but perhaps more easy to
     // avoid a conflict with the name
-    if (plugin.src.endsWith('Save') && this.fileHandle) {
+    if (plugin.src.endsWith('Save') && (await this.fileHandle)) {
       this.fileSave();
     } else {
       this.getSaveFileLocation();
@@ -122,7 +132,13 @@ export default class SaveAs extends LitElement {
 
   // TODO: Unsure how to type the file handle correctly
   async fileSave() {
-    if (!this.doc || !this.fileHandle) return;
+    if (!this.doc) return;
+
+    const fileHandle = await this.fileHandle;
+    if (!fileHandle) {
+      this.getSaveFileLocation();
+      return;
+    }
 
     try {
       const writableStream = await (<any>this.fileHandle).createWritable();
@@ -131,7 +147,7 @@ export default class SaveAs extends LitElement {
       );
       await writableStream.write(xmlFile);
 
-      this.userMessage = `File ${(<any>this.fileHandle).name} saved (${fileSize(
+      this.userMessage = `File ${(<any>fileHandle).name} saved (${fileSize(
         xmlFile.length
       )}).`;
 
