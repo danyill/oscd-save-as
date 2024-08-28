@@ -11,8 +11,9 @@ export default class SaveAs extends LitElement {
     docName: string;
     editCount: number;
     usedDirectory: string;
-    fileHandle: object | null;
     userMessage: string;
+    set fileHandle(handle: object | null | undefined);
+    get fileHandle(): Promise<object | null | undefined>;
     usedFileNames: string[];
     userMessageUI?: Snackbar;
     getSaveFileLocation(): Promise<void>;
