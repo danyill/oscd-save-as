@@ -1,4 +1,4 @@
-import { LitElement, TemplateResult } from 'lit';
+import { LitElement, PropertyValues, TemplateResult } from 'lit';
 import '@material/mwc-snackbar';
 import type { Snackbar } from '@material/mwc-snackbar';
 /**
@@ -21,5 +21,6 @@ export default class SaveAs extends LitElement {
     private handleKeyPress;
     run(): Promise<void>;
     fileSave(): Promise<void>;
+    protected updated(changedProperties: PropertyValues): Promise<void>;
     render(): TemplateResult;
 }

@@ -1002,6 +1002,16 @@ class SaveAs extends s$1 {
         if (this.userMessageUI)
             this.userMessageUI.show();
     }
+    async updated(changedProperties) {
+        super.updated(changedProperties);
+        // If a new document has opened we don't  try to save any more
+        // until we have a new "Save As" dialogue.
+        // If the same filename is opened this doesn't seem to work quite
+        // right, see https://github.com/openscd/open-scd-core/issues/92
+        if (changedProperties.has('docName')) {
+            this.fileHandle = null;
+        }
+    }
     render() {
         return x `
       <mwc-snackbar
