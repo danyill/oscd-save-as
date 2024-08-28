@@ -11,6 +11,21 @@ function fileSize(kBSize: number): string {
   return 'Unknown size';
 }
 
+function formatXml(xml: string, tab?: string) {
+  let formatted = '';
+  let indent = '';
+
+  // eslint-disable-next-line no-param-reassign
+  if (!tab) tab = '\t';
+
+  xml.split(/>\s*</).forEach(node => {
+    if (node.match(/^\/\w/)) indent = indent.substring(tab!.length);
+    formatted += `${indent}<${node}>\r\n`;
+    if (node.match(/^<?\w[^>]*[^/]$/)) indent += tab;
+  });
+  return formatted.substring(1, formatted.length - 3);
+}
+
 /**
  * WebComponent for OpenSCD to allow saving to a file system location
  * using the File System API
@@ -111,7 +126,9 @@ export default class SaveAs extends LitElement {
 
     try {
       const writableStream = await (<any>this.fileHandle).createWritable();
-      const xmlFile = new XMLSerializer().serializeToString(this.doc);
+      const xmlFile = formatXml(
+        new XMLSerializer().serializeToString(this.doc)
+      );
       await writableStream.write(xmlFile);
 
       this.userMessage = `File ${(<any>this.fileHandle).name} saved (${fileSize(
