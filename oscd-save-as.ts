@@ -141,7 +141,7 @@ export default class SaveAs extends LitElement {
     }
 
     try {
-      const writableStream = await (<any>this.fileHandle).createWritable();
+      const writableStream = await (<any>fileHandle).createWritable();
       const xmlFile = formatXml(
         new XMLSerializer().serializeToString(this.doc)
       );
